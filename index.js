@@ -108,7 +108,7 @@ class PolicyNetwork {
    *   in this round of training.
    */
   async train(
-      cartPoleSystem, optimizer, discountRate, numGames, maxStepsPerGame) {
+      cartPoleSystem, optimizer, discountRate, numGames, maxStepsPerGame, numberOfStepsPerGameArray) {
     const allGradients = [];
     const allRewards = [];
     const gameSteps = [];
