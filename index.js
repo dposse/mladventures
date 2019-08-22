@@ -257,6 +257,8 @@ class PolicyNetwork {
 // The IndexedDB path where the model of the policy network will be saved.
 const MODEL_SAVE_PATH_ = 'indexeddb://cart-pole-v1';
 
+const MODEL_SAVE_PATH_TO_FILE = 'downloads://mladventures-v0';
+
 /**
  * A subclass of PolicyNetwork that supports saving and loading.
  */
@@ -274,6 +276,7 @@ export class SaveablePolicyNetwork extends PolicyNetwork {
    * Save the model to IndexedDB.
    */
   async saveModel() {
+    await this.policyNet.save(MODEL_SAVE_PATH_TO_FILE);
     return await this.policyNet.save(MODEL_SAVE_PATH_);
   }
 
