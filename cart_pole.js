@@ -84,11 +84,19 @@ export class BoardPlayer {
     // this.thetaDot =  (Math.random() - 0.5) * 0.5;
 
     //board state is 2d array filled with 0's
-    this.board = gameConstants.INITIAL_BOARD_STATE;
+    this.board = [
+      [0,0,0,0,0],
+      [0,0,0,0,0],
+      [0,0,0,0,0],
+      [0,0,0,0,0],
+      [0,0,0,0,0]
+    ];
     //player position is just a number, always on first row (array) of board
     this.playerPosition = gameConstants.INITIAL_PLAYER_POSITION;
     //want two empty rows between each tiled row => tickCounter % 3 === 0
     this.tickCounter = 0;
+    console.log(this.board);
+    console.log(gameConstants.INITIAL_BOARD_STATE);
   }
 
   /**
@@ -96,14 +104,17 @@ export class BoardPlayer {
    */
   getStateTensor() {
     // flatten board to one array and add player position
-    const tensorArray = this.board.flat();
+    console.log(this.board);
+    const tensorArray = [...this.board[1]];
     tensorArray.push(this.playerPosition);
     // console.log('hi ', tensorArray);
+    console.log('board[1]: ', [...this.board[1]]);
+    console.log(`tensorArray: `, tensorArray);
 
     return tf.tensor2d([tensorArray]);
   }
 
-  /**
+  /** 
    * Update the cart-pole system using an action.
    * @param {number} action Only the sign of `action` matters.
    *   A value > 0 leads to a rightward force of a fixed magnitude.
