@@ -23,6 +23,5 @@ For a more detailed overview of policy gradient methods, see:
 ## Usage
 
 ```sh
-yarn && yarn watch
-```
 ./serve.sh
+```
