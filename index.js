@@ -36,7 +36,7 @@
 
 import * as tf from '@tensorflow/tfjs';
 
-import {maybeRenderDuringTraining, onGameEnd, setUpUI} from './ui';
+import {maybeRenderDuringTraining, onGameEnd, setUpUI, showValueDistribution} from './ui';
 
 /**
  * Policy network for controlling the cart-pole system.
@@ -121,6 +121,8 @@ class PolicyNetwork {
       const gameRewards = [];
       const gameGradients = [];
       for (let j = 0; j < maxStepsPerGame; ++j) {
+        const tempTensor = showValueDistribution(cartPoleSystem.getStateTensor());
+        
         // For every step of the game, remember gradients of the policy
         // network's weights with respect to the probability of the action
         // choice that lead to the reward.
@@ -136,7 +138,8 @@ class PolicyNetwork {
         const isDone = cartPoleSystem.update(action);
 
         await maybeRenderDuringTraining(cartPoleSystem);
-
+        // below commented because getting "Tensor is disposed" already error
+        // tempTensor.dispose();
         if (isDone) {
           // When the game ends before max step count is reached, a reward of
           // 0 is given.

@@ -22,6 +22,7 @@ import embed from 'vega-embed';
 import {BoardPlayer} from './cart_pole';
 import {SaveablePolicyNetwork} from './index';
 import {mean, sum} from './utils';
+import { func } from '@tensorflow/tfjs-data';
 
 const appStatus = document.getElementById('app-status');
 const storedModelStatusInput = document.getElementById('stored-model-status');
@@ -110,14 +111,22 @@ function plotSteps() {
   });
 }
 
-function showModelInspection(model) {
+function showModelInspection(policy) {
   const surface = {
-    name: 'Model summary',
+    name: 'Model Summary',
     tab: 'Model inspection'
   };
-  console.log(model);
-  console.log(model.policyNet);
-  tfvis.show.modelSummary(surface, model.policyNet);
+  // policy is a SaveablePolicyNetwork - defined in this program has a tensorflow model inside .policyNet
+  tfvis.show.modelSummary(surface, policy.policyNet);
+}
+
+export function showValueDistribution(tensor) {
+  const surface = {
+    name: 'Individual State Tensor Values Distribution',
+    tab: 'Model inspection'
+  };
+  tfvis.show.valuesDistribution(surface, tensor);
+  return tensor;
 }
 
 function disableModelControls() {
@@ -331,10 +340,14 @@ export async function setUpUI() {
           console.log(`# of tensors: ${tf.memory().numTensors}`);
           plotSteps();
           showModelInspection(policyNet);
+          showValueDistribution(policyNet);
           onIterationEnd(i + 1, trainIterations);
           await tf.nextFrame();  // Unblock UI thread.
           await policyNet.saveModel();
           await updateUIControlState();
+
+          //check memory for memory leaks
+          tf.memory();
 
           if (stopRequested) {
             logStatus('Training stopped by user.');
