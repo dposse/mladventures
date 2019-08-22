@@ -355,7 +355,7 @@ export async function setUpUI() {
           showStepsPerGameDistribution(numberOfStepsPerGameArray);
           onIterationEnd(i + 1, trainIterations);
           await tf.nextFrame();  // Unblock UI thread.
-          await policyNet.saveModel();
+          await policyNet.saveModelToIndexedDB();
           await updateUIControlState();
 
           //check memory for memory leaks
@@ -369,6 +369,8 @@ export async function setUpUI() {
         if (!stopRequested) {
           logStatus('Training completed.');
         }
+        //save to file after batch of iterations, not within for loop which would be after each iteration
+        await policyNet.saveModelToFile();
       } catch (err) {
         logStatus(`ERROR: ${err.message}`);
       }

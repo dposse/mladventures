@@ -277,9 +277,14 @@ export class SaveablePolicyNetwork extends PolicyNetwork {
   /**
    * Save the model to IndexedDB.
    */
-  async saveModel() {
-    await this.policyNet.save(MODEL_SAVE_PATH_TO_FILE);
+  async saveModelToIndexedDB() {
     return await this.policyNet.save(MODEL_SAVE_PATH_);
+  }
+  /**
+   * Save the model to file
+   */
+  async saveModelToFile() {
+    return await this.policyNet.save(MODEL_SAVE_PATH_TO_FILE);
   }
 
   /**
