@@ -198,10 +198,23 @@ export class BoardPlayer {
   };
 
   tileArray(size) {
-    const array = [];
-    for (let i=0; i<size; i++) {
-      array.push(Math.round(Math.random()));
-    }    
+    let array;
+    let impossible;
+
+    do {
+      array = [];
+      for (let i=0; i<size; i++) {
+        array.push(Math.round(Math.random()));
+      }
+      // for now saying that any array with an open space is possible. all 1's clearly impossible
+      impossible = array.reduce((acc, curr) => {
+        if (curr === 0) {
+          return false;
+        }
+        return acc;
+      }, true);
+    } while (impossible);
+    
     return array;
   };
   
