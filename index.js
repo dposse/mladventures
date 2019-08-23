@@ -83,7 +83,7 @@ class PolicyNetwork {
         units: hiddenLayerSize,
         activation: 'elu',
         // `inputShape` is required only for the first layer.
-        inputShape: i === 0 ? [26] : undefined
+        inputShape: i === 0 ? [6] : undefined
       }));
     });
     // The last layer has only one unit. The single output number will be
@@ -108,7 +108,7 @@ class PolicyNetwork {
    *   in this round of training.
    */
   async train(
-      cartPoleSystem, optimizer, discountRate, numGames, maxStepsPerGame) {
+      cartPoleSystem, optimizer, discountRate, numGames, maxStepsPerGame, numberOfStepsPerGameArray) {
     const allGradients = [];
     const allRewards = [];
     const gameSteps = [];
@@ -137,7 +137,8 @@ class PolicyNetwork {
         // console.log(`this.currentActions_: `, this.currentActions_);
         const isDone = cartPoleSystem.update(action);
 
-        await maybeRenderDuringTraining(cartPoleSystem);
+        // commented out - original project had rendering here
+        // await maybeRenderDuringTraining(cartPoleSystem);
         // below commented because getting "Tensor is disposed" already error
         // tempTensor.dispose();
         if (isDone) {
@@ -215,6 +216,7 @@ class PolicyNetwork {
 
       // Get the probability of the leftward action.
       const leftProb = tf.sigmoid(logits);
+      console.log(`left prob: `, leftProb.dataSync()[0]);
       // console.log(leftProb);
       // Probabilites of the left and right actions.
       const leftRightProbs = tf.concat([leftProb, tf.sub(1, leftProb)], 1);
@@ -255,7 +257,9 @@ class PolicyNetwork {
 }
 
 // The IndexedDB path where the model of the policy network will be saved.
-const MODEL_SAVE_PATH_ = 'indexeddb://cart-pole-v1';
+const MODEL_SAVE_PATH_ = 'indexeddb://mladventures-v0';
+
+const MODEL_SAVE_PATH_TO_FILE = 'downloads://mladventures-v0';
 
 /**
  * A subclass of PolicyNetwork that supports saving and loading.
@@ -273,8 +277,14 @@ export class SaveablePolicyNetwork extends PolicyNetwork {
   /**
    * Save the model to IndexedDB.
    */
-  async saveModel() {
+  async saveModelToIndexedDB() {
     return await this.policyNet.save(MODEL_SAVE_PATH_);
+  }
+  /**
+   * Save the model to file
+   */
+  async saveModelToFile() {
+    return await this.policyNet.save(MODEL_SAVE_PATH_TO_FILE);
   }
 
   /**

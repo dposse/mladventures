@@ -129,6 +129,15 @@ export function showValueDistribution(tensor) {
   return tensor;
 }
 
+function showStepsPerGameDistribution(gamestepsArray) {
+  const surface = {
+    name: 'Steps per game',
+    tab: 'Model inspection'
+  };
+  console.log(JSON.stringify(gamestepsArray));
+  tfvis.render.histogram(surface, gamestepsArray);
+}
+
 function disableModelControls() {
   trainButton.textContent = 'Stop';
   testButton.disabled = true;
@@ -325,13 +334,14 @@ export async function setUpUI() {
         const optimizer = tf.train.adam(learningRate);
 
         meanStepValues = [];
+        const numberOfStepsPerGameArray = [];
         onIterationEnd(0, trainIterations);
         let t0 = new Date().getTime();
         stopRequested = false;
         for (let i = 0; i < trainIterations; ++i) {
           const gameSteps = await policyNet.train(
               cartPole, optimizer, discountRate, gamesPerIteration,
-              maxStepsPerGame);
+              maxStepsPerGame, numberOfStepsPerGameArray);
           const t1 = new Date().getTime();
           const stepsPerSecond = sum(gameSteps) / ((t1 - t0) / 1e3);
           t0 = t1;
@@ -341,9 +351,11 @@ export async function setUpUI() {
           plotSteps();
           showModelInspection(policyNet);
           showValueDistribution(policyNet);
+          numberOfStepsPerGameArray.push(...gameSteps);
+          showStepsPerGameDistribution(numberOfStepsPerGameArray);
           onIterationEnd(i + 1, trainIterations);
           await tf.nextFrame();  // Unblock UI thread.
-          await policyNet.saveModel();
+          await policyNet.saveModelToIndexedDB();
           await updateUIControlState();
 
           //check memory for memory leaks
@@ -357,6 +369,8 @@ export async function setUpUI() {
         if (!stopRequested) {
           logStatus('Training completed.');
         }
+        //save to file after batch of iterations, not within for loop which would be after each iteration
+        await policyNet.saveModelToFile();
       } catch (err) {
         logStatus(`ERROR: ${err.message}`);
       }
