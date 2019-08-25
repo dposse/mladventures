@@ -83,7 +83,7 @@ class PolicyNetwork {
         units: hiddenLayerSize,
         activation: 'elu',
         // `inputShape` is required only for the first layer.
-        inputShape: i === 0 ? [6] : undefined
+        inputShape: i === 0 ? [11] : undefined
       }));
     });
     // The last layer has only one unit. The single output number will be
@@ -133,7 +133,7 @@ class PolicyNetwork {
 
         this.pushGradients(gameGradients, gradients);
         const action = this.currentActions_[0];
-        // console.log(`action in index: `, action);
+        console.log(`action in index: `, action);
         // console.log(`this.currentActions_: `, this.currentActions_);
         const isDone = cartPoleSystem.update(action);
 
@@ -144,7 +144,7 @@ class PolicyNetwork {
         if (isDone) {
           // When the game ends before max step count is reached, a reward of
           // 0 is given.
-          gameRewards.push(0);
+          gameRewards.push(-1);
           break;
         } else {
           // As long as the game doesn't end, each step leads to a reward of 1.
@@ -212,7 +212,7 @@ class PolicyNetwork {
   getLogitsAndActions(inputs) {
     return tf.tidy(() => {
       const logits = this.policyNet.predict(inputs);
-      // console.log(`logits: `, logits);
+      console.log(`logits: `, logits.dataSync());
 
       // Get the probability of the leftward action.
       const leftProb = tf.sigmoid(logits);
@@ -257,9 +257,9 @@ class PolicyNetwork {
 }
 
 // The IndexedDB path where the model of the policy network will be saved.
-const MODEL_SAVE_PATH_ = 'indexeddb://mladventures-v0';
+const MODEL_SAVE_PATH_ = 'indexeddb://nextrowonlysize10-onenodeoutput';
 
-const MODEL_SAVE_PATH_TO_FILE = 'downloads://mladventures-v0';
+const MODEL_SAVE_PATH_TO_FILE = 'downloads://nextrowonlysize10-onenodeoutput';
 
 /**
  * A subclass of PolicyNetwork that supports saving and loading.

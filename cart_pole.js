@@ -85,33 +85,42 @@ export class BoardPlayer {
 
     //board state is 2d array filled with 0's
     this.board = [
-      [0,0,0,0,0],
-      [0,0,0,0,0],
-      [0,0,0,0,0],
-      [0,0,0,0,0],
-      [0,0,0,0,0]
+      [0,0,0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0,0,0],
+      [0,0,0,0,0,0,0,0,0,0]
     ];
     //player position is just a number, always on first row (array) of board
     this.playerPosition = gameConstants.INITIAL_PLAYER_POSITION;
     //want two empty rows between each tiled row => tickCounter % 3 === 0
     this.tickCounter = 0;
-    console.log(this.board);
-    console.log(gameConstants.INITIAL_BOARD_STATE);
+    // console.log(this.board);
+    // console.log(gameConstants.INITIAL_BOARD_STATE);
+    this.nextRow = [0,0,0,0,0,0,0,0,0,0];
   }
 
   /**
    * Get current state as a tf.Tensor of shape [1, 4].
    */
   getStateTensor() {
-    // flatten board to one array and add player position
-    console.log(this.board);
-    const tensorArray = [...this.board[1]];
-    tensorArray.push(this.playerPosition);
-    // console.log('hi ', tensorArray);
-    console.log('board[1]: ', [...this.board[1]]);
-    console.log(`tensorArray: `, tensorArray);
+  //   // flatten board to one array and add player position
+  //   console.log(this.board);
+  //   const tensorArray = [...this.board[1]];
+  //   tensorArray.push(this.playerPosition);
+  //   // console.log('hi ', tensorArray);
+  //   console.log('board[1]: ', [...this.board[1]]);
+  //   console.log(`tensorArray: `, tensorArray);
+    this.nextRow = this.tileArray(gameConstants.WALL_SIZE);
+    this.nextRow.push(this.playerPosition);
+    console.log(this.nextRow);
 
-    return tf.tensor2d([tensorArray]);
+    return tf.tensor2d([this.nextRow]);
   }
 
   /** 
@@ -145,9 +154,9 @@ export class BoardPlayer {
     this.board = this.updateBoard(this.board, this.tickCounter);
 
     // move player based on action
-    if (action === 0) {
+    if (action > 0) {
       this.playerPosition = this.moveRight(this.playerPosition);
-    } else if (action === 1) {
+    } else {
       this.playerPosition = this.moveLeft(this.playerPosition);
     } 
 
@@ -172,9 +181,12 @@ export class BoardPlayer {
    * @returns {bool} Whether the simulation is done.
    */
   isDone() {
-    console.log('board: ', JSON.stringify(this.board));
-    console.log('player position: ', this.playerPosition);
-    return (this.board[0][this.playerPosition] === 1);
+    // console.log('board: ', JSON.stringify(this.board));
+    // console.log('player position: ', this.playerPosition);
+    // return (this.board[0][this.playerPosition] === 1);
+  
+    //not using the board - only check against nextrow
+    return (this.nextRow[this.playerPosition] === 1);
   }
 
 
