@@ -21,6 +21,8 @@ limitations under the License.
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="/tfjs-examples.44bb3400.css">
+  <link rel="shortcut icon" href="dog3.jpg" />
+  <title>The Machine Learning Adventures of Jojo and Junior</title>
 </head>
 
 <body>
@@ -28,6 +30,10 @@ limitations under the License.
   <style>#app-status {
       color: blue;
       padding-bottom: 1em;
+    }
+
+    #create-model, #delete-stored-model, #train, #test {
+      background-color: rgb(124, 181, 236);
     }
 
     .buttons-section {
@@ -58,53 +64,28 @@ limitations under the License.
       font-style: italic;
       display: inline-block;
       margin-left: 15px;
-    }</style>
+    }
+    
+    h1 {
+      font-size: 2.5em;
+    }
+
+    p.section-head {
+      border-left: 1px solid rgb(124, 181, 236);
+    }
+    </style>
 
   <body>
     <div class="tfjs-example-container centered-container">
       <section class="title-area">
-        <h1>TensorFlow.js: Reinforcement Learning</h1>
-        <p class="subtitle">Train a model to balance a pole on a cart using reinforcement learning.</p>
+        <h1>The Machine Learning Adventures of Jojo and Junior</h1>
+        <p class="subtitle">Using Tensorflow.js to implement reinforcement learning</p>
       </section>
 
       <section>
         <p class="section-head">Description</p>
-        <p>This example illustrates how to use TensorFlow.js to perform simple
-          <a href="https://en.wikipedia.org/wiki/Reinforcement_learning">reinforcement learning</a> (RL).
-          Specifically, it showcases an implementation of the policy-gradient method in TensorFlow.js.
-          This implementation is used to solve the classic <a href="https://en.wikipedia.org/wiki/Inverted_pendulum">cart-pole
-            control problem.</a>
-        </p>
-
-        <p>
-          Through <span class="in-type">self play</span> the agent will learn to balance
-          the pole for as many <span class="out-example">steps</span> as it can.
-        </p>
-      </section>
-
-      <section>
-        <p class="section-head">Instructions</p>
-        <p></p>
-        <ul>
-          <li>
-            Choose a hidden layer size and click "Create Model".
-          </li>
-          <li>
-            Select training parameters and then click "Train".
-          </li>
-          <li>
-            Note that while the model is training it periodically saves a copy of itself
-            to local browser storage, this mean you can refresh the page and continue training
-            from the last save point. If at any point you want to start training from scratch, click
-            "Delete stored Model".
-          </li>
-          <li>
-            Once the model has finished training you can click "Test" to see how many 'steps' the agent
-            can balance the pole for. You can also click 'Stop' to pause the training after the current iteration
-            ends if you want to test the model sooner.
-          </li>
-          <li>During training and testing a small simulation of the agent behaviour will be rendered.</li>
-        </ul>
+        <p>This is the client front end where Tensorflow.js performs reinforcement learning, using an implementation of the policy-gradient method.</p>
+        <p>The trained model is exported to the operating system's file system, then imported to the Node.js server that runs the simulation.</p>
       </section>
 
       <section>
@@ -154,11 +135,6 @@ limitations under the License.
               <label class="input-label">Learning rate:</label>
               <input id="learning-rate" value="0.05">
             </div>
-            <div class="input-div">
-              <label class="input-label">Render during training:</label>
-              <input type="checkbox" id="render-during-training">
-              <span class="note">Uncheck me to speed up training.</span>
-            </div>
 
             <div class="buttons-section">
               <button id="train" disabled="true">Train</button>
@@ -189,14 +165,6 @@ limitations under the License.
           <div id="steps-container"></div>
         </div>
       </section>
-
-      <section>
-        <p class="section-head">Simulation</p>
-        <div>
-          <canvas id="cart-pole-canvas" height="150px" width="500px"></canvas>
-        </div>
-      </section>
-
 
       <script src="/cart-pole.e31bb0bc.js"></script>
   </div></body>
